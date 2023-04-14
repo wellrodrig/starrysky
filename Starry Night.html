@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+body {
+    margin: 0;
+    overflow: hidden;
+    background-color: #000;
+}
+
+/* Style for the "inicio" div */
+#inicio {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    background-image: url('https://c1.wallpaperflare.com/preview/430/227/672/milky-way-starry-sky-night-sky-star.jpg');
+    /* Overlay color */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    opacity: 1;
+    transition: opacity 1s ease-in-out;
+}
+
+/* Style for the "start" button */
+#start {
+    font-size: 24px;
+    padding: 16px 32px;
+    background-color: #ffffff;
+    border: none;
+    cursor: pointer;
+}
+
+.container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #000;
+    width: 200px;
+    height: 100px;
+    color: #fff;
+    font-size: 0.8em;
+    margin: 10px;
+}
+
+.dot {
+    position: absolute;
+    border-radius: 50%;
+}
+    </style>
+</head>
+<body>
+
+
+     
+      <div id="inicio">
+        <button id="start">START</button>
+      </div>
+
+<div class="container">
+  <div class="slider">
+    <input type="range" oninput="igniter(this.value)" min="0" max="0.0059" step="0.0001" value="0.0" />
+  </div>
+</div>
+    <script>
+// Add event listener for the "start" button click...
+document.getElementById('start').addEventListener('click', function() {
+
+    document.getElementById('inicio').style.opacity = 0;
+
+    setTimeout(function() {
+        document.getElementById('inicio').style.display = 'none';
+    }, 2000);
+});
+
+
+
+
+function removeChild() {
+    //Removes all .dot divs from page
+    let dots = document.querySelectorAll('.dot');
+    for (let i = dots.length - 1; i >= 0; i--) {
+        dots[i].parentNode.removeChild(dots[i]);
+    }
+}
+
+
+const dotCount = Math.floor(window.innerWidth * window.innerHeight * 0.0013);
+const minDotSize = 1;
+const maxDotSize = 4;
+const minBlinkingDotSize = 1;
+const maxBlinkingDotSize = 7;
+const blinkingSpeed = 2500;
+
+const colors = ["rgb(152, 153, 193)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(255,255,255)",
+    "rgb(110, 126, 177)",
+    "rgb(88, 117, 173)",
+    "rgb(75, 110, 151)",
+    "rgb(75, 94, 148)",
+    "rgb(200,70,70)",
+    "rgb(57, 88, 140)",
+    "rgb(51, 78, 128)",
+    "rgb(47, 71, 114)",
+    "rgb(28, 71, 109)",
+    "rgb(25, 56, 104)",
+    "rgb(20, 44, 95)",
+    "rgb(9, 38, 87)",
+    "rgb(7, 36, 73)",
+    "rgb(4, 24, 68)",
+    "rgb(2, 14, 61)",
+    "rgb(1, 6, 38)",
+    "rgb(193, 153, 152)",
+    "rgb(168, 134, 144)",
+    "rgb(127, 147, 156)",
+    "rgb(96, 122, 141)",
+    "rgb(255,255,255)",
+    "rgb(86, 96, 130)",
+    "rgb(78, 84, 119)",
+    "rgb(67, 78, 110)",
+    "rgb(57, 66, 98)",
+    "rgb(46, 53, 86)",
+    "rgb(36, 42, 72)",
+    "rgb(29, 34, 63)",
+    "rgb(21, 24, 54)",
+    "rgb(15, 18, 45)",
+    "rgb(12, 15, 37)",
+    "rgb(9, 11, 30)",
+    "rgb(255,255,255)",
+    "rgb(6, 7, 22)",
+    "rgb(4, 4, 14)",
+    "rgb(159, 137, 117)"
+]
+
+let dots = [];
+let randomColor = colors[Math.floor(Math.random() * colors.length)];
+let brightNum = getRandomNumber(3, 30);
+
+function createDot(x, y, size, color, opacity, dropShadow) {
+    const dot = document.createElement('div');
+    dot.className = 'dot';
+    dot.style.top = y + 'px';
+    dot.style.left = x + 'px';
+    dot.style.width = size + 'px';
+    dot.style.height = size + 'px';
+    dot.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+    dot.style.filter = `drop-shadow(0px 0px ${dropShadow}px ${color})`;
+    dot.style.transition = "all ease 2s";
+    document.body.appendChild(dot);
+    return dot;
+}
+
+function createDots(dotCountParam) {
+    for (let i = 0; i < dotCountParam; i++) {
+        const x = getRandomNumber(0, window.innerWidth);
+        const y = getRandomNumber(0, window.innerHeight);
+        const size = getRandomNumber(minDotSize, maxDotSize);
+        const color = getRandomColor(colors);
+        const opacity = 1;
+        const dropShadow = getRandomNumber(1, 15);
+        const dot = createDot(x, y, size, color, opacity, dropShadow);
+        dots.push(dot);
+    }
+
+    const blinkingDotCount = Math.floor(dotCountParam * 0.05);
+    for (let i = 0; i < blinkingDotCount; i++) {
+        const x = getRandomNumber(0, window.innerWidth);
+        const y = getRandomNumber(0, window.innerHeight);
+        const size = getRandomNumber(minBlinkingDotSize, maxBlinkingDotSize);
+        const color = getRandomColor(colors);
+        const opacity = getRandomNumber(0, 0.5);
+        const dropShadow = getRandomNumber(1, 30);
+        const dot = createDot(x, y, size, color, opacity, dropShadow);
+        dots.push(dot);
+    }
+}
+
+/* First version of the animateDots function that doesn't let you randomly pick stars to blink
+
+function animateDots() {
+            for (let i = 0; i < dots.length; i++) {
+                const dot = dots[i];
+				if (dot.clientWidth >= 1 && dot.clientWidth <= 7){
+                dot.style.opacity = getRandomNumber(0.2, 1);
+				dot.style.filter = `drop-shadow(2px 2px ${brightNum}px ${randomColor})`;
+				}
+            }
+            setTimeout(animateDots, blinkingSpeed);
+        }*/
+
+
+
+//Test new function
+function animateDots() {
+    // Get all the divs with class "dots"
+    const divs = document.querySelectorAll(".dot");
+
+    // Count the total number of divs
+    const totalDivs = divs.length;
+
+    // Calculate the number of divs to apply opacity effect on (30% of totalDivs)
+    const numDivsToApplyOpacity = Math.round(totalDivs * 0.3);
+
+    // Generate an array of unique random indices within the range of totalDivs
+    const randomIndices = [];
+    while (randomIndices.length < numDivsToApplyOpacity) {
+        const randomIndex = Math.floor(Math.random() * totalDivs);
+        if (!randomIndices.includes(randomIndex)) {
+            randomIndices.push(randomIndex);
+        }
+    }
+
+    // Apply opacity effect on the randomly selected divs
+    randomIndices.forEach(index => {
+        const animatedBrightness = getRandomNumber(3, 20);
+        divs[index].style.opacity = getRandomNumber(0.2, 1);
+        divs[index].style.filter = `drop-shadow(0px 0px ${animatedBrightness}px ${randomColor})`;
+    });
+    setTimeout(animateDots, blinkingSpeed);
+}
+
+
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function getRandomColor(colors) {
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+createDots(dotCount);
+animateDots();
+
+
+function igniter(n) {
+    dotCountNew = Math.floor(window.innerWidth * window.innerHeight * n);
+    console.log(n)
+    removeChild()
+    createDots(dotCountNew);
+    animateDots();
+}
+</script>
+</body>
+</html>
